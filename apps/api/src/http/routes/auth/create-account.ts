@@ -1,3 +1,4 @@
+import { BadRequestError } from '@/http/routes/_errors/bad-request-error'
 import { prisma } from '@/lib/prisma'
 import { hash } from 'bcryptjs'
 import { FastifyInstance } from 'fastify'
@@ -9,6 +10,8 @@ export async function createAccount(app: FastifyInstance) {
     '/users',
     {
       schema: {
+        summary: 'Create a new account',
+        tags: ['Auth'],
         body: z.object({
           name: z.string(),
           email: z.email(),
@@ -24,10 +27,17 @@ export async function createAccount(app: FastifyInstance) {
       })
 
       if (userWithSameEmail) {
-        return reply
-          .status(400)
-          .send({ message: 'User with same e-mail already exists.' })
+        throw new BadRequestError('User with same e-mail already exists.')
       }
+
+      const [, domain] = email.split('@')
+
+      const autoJoinOrganization = await prisma.organization.findFirst({
+        where: {
+          domain,
+          shouldAttachUsersByDomain: true,
+        },
+      })
 
       const passwordHash = await hash(password, 6)
 
@@ -36,6 +46,13 @@ export async function createAccount(app: FastifyInstance) {
           name,
           email,
           passwordHash,
+          member_on: autoJoinOrganization
+            ? {
+                create: {
+                  organizationId: autoJoinOrganization.id,
+                },
+              }
+            : undefined,
         },
       })
 
