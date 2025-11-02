@@ -5,5 +5,12 @@
     }
   ],
   "editor.overtypeCursorStyle": "line",
-  "terminal.integrated.cursorStyle": "line"
+  "terminal.integrated.cursorStyle": "line",
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": "on",
+    "strings": "on"
+  },
+  "editor.inlineSuggest.enabled": true,
+  "editor.suggestOnTriggerCharacters": true
 }
