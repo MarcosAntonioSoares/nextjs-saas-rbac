@@ -23,13 +23,40 @@ import Link from 'next/link'
 import { signInWithEmailAndPassword } from '@/app/auth/sign-in/actions'
 import githubIcon from '@/assets/github-icon.svg'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { useActionState } from 'react'
+import { FormEvent, useState, useTransition } from 'react'
 
 export function SignInForm() {
-  const [state, formAction, isPending] = useActionState(
-    signInWithEmailAndPassword,
-    { success: false, message: null, fieldErrors: null, formErrors: null }
-  )
+  // const [state, formAction, isPending] = useActionState(
+  //   signInWithEmailAndPassword,
+  //   { success: false, message: null, fieldErrors: null, formErrors: null }
+  // )
+
+  const [isPending, startTransition] = useTransition()
+
+  const [{ success, message, fieldErrors, formErrors }, setFormState] =
+    useState<{
+      success: boolean
+      message: string | null
+      fieldErrors: Record<string, string[]> | null
+      formErrors: string[] | null
+    }>({
+      success: false,
+      message: null,
+      fieldErrors: null,
+      formErrors: null,
+    })
+
+  async function hanhleSignIn(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const form = event.currentTarget
+    const data = new FormData(form)
+
+    startTransition(async () => {
+      const state = await signInWithEmailAndPassword(data)
+      setFormState(state)
+    })
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -41,23 +68,23 @@ export function SignInForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={formAction} className="flex w-full flex-col gap-7">
-            {state.success === false && state.message && (
+          <form onSubmit={hanhleSignIn} className="flex w-full flex-col gap-7">
+            {success === false && message && (
               <Alert variant="destructive">
                 <AlertTriangle className="size-4" />
                 <AlertTitle>Sign in failed!</AlertTitle>
                 <AlertDescription>
-                  <p>{state.message}</p>
+                  <p>{message}</p>
                 </AlertDescription>
               </Alert>
             )}
-            {state.formErrors && state.formErrors?.length > 0 && (
+            {formErrors && formErrors?.length > 0 && (
               <Alert variant="destructive">
                 <AlertCircle className="size-4" />
                 <AlertTitle>Form validation failed</AlertTitle>
                 <AlertDescription>
                   <ul className="list-inside list-disc space-y-1">
-                    {state.formErrors.map((error, index) => (
+                    {formErrors.map((error, index) => (
                       <li key={index}>{error}</li>
                     ))}
                   </ul>
@@ -74,15 +101,20 @@ export function SignInForm() {
                   placeholder="m@example.com"
                   required
                 />
-                {state.fieldErrors?.email && (
+                {fieldErrors?.email && (
                   <FieldDescription className="text-red-500">
-                    {state.fieldErrors.email}
+                    {fieldErrors.email}
                   </FieldDescription>
                 )}
               </Field>
               <Field>
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <Input id="password" name="password" type="password" />
+                {fieldErrors?.password && (
+                  <FieldDescription className="text-red-500">
+                    {fieldErrors.password}
+                  </FieldDescription>
+                )}
                 <div className="self-start">
                   <Link
                     href="/auth/forgot-password"
@@ -91,11 +123,6 @@ export function SignInForm() {
                     Forgot your password?
                   </Link>
                 </div>
-                {state.fieldErrors?.password && (
-                  <FieldDescription className="text-red-500">
-                    {state.fieldErrors.password}
-                  </FieldDescription>
-                )}
               </Field>
 
               <Field>

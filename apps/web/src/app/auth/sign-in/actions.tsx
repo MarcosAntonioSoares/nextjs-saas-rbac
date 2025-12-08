@@ -9,7 +9,7 @@ const signInSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 })
 
-export async function signInWithEmailAndPassword(_: unknown, data: FormData) {
+export async function signInWithEmailAndPassword(data: FormData) {
   const result = signInSchema.safeParse(Object.fromEntries(data))
 
   if (!result.success) {
@@ -25,6 +25,8 @@ export async function signInWithEmailAndPassword(_: unknown, data: FormData) {
       email,
       password,
     })
+
+    console.log('TOKEN:', token)
   } catch (error) {
     if (error instanceof HTTPError) {
       const { message } = await error.response.json()
