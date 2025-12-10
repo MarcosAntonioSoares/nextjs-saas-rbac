@@ -46,8 +46,7 @@ export default function ForgotPasswordPage() {
                 <Button type="submit">Send recovery email</Button>
 
                 <FieldDescription className="px-6 text-center">
-                  Remembered your password?{' '}
-                  <Link href="/auth/sign-in">Sign in</Link>
+                  Remembered your password? <Link href="/sign-in">Sign in</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
