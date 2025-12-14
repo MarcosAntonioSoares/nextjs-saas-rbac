@@ -28,6 +28,7 @@ import { deleteProject } from '@/http/routes/projects/delete-projects'
 import { getProject } from '@/http/routes/projects/get-project'
 import { getProjects } from '@/http/routes/projects/get-projects'
 import { updateProject } from '@/http/routes/projects/update-project'
+import fastifyCookie from '@fastify/cookie'
 import fastifyCors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import fastifySwagger from '@fastify/swagger'
@@ -42,6 +43,27 @@ import {
 } from 'fastify-type-provider-zod'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
+
+app.register(fastifyCookie, {
+  secret: env.COOKIE_SECRET,
+  hook: 'onRequest',
+})
+
+app.register(fastifyCors, {
+  origin: 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['set-cookie'],
+})
+
+app.register(fastifyJwt, {
+  secret: env.JWT_SECRET,
+  cookie: {
+    cookieName: 'auth_token',
+    signed: false,
+  },
+})
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
@@ -71,12 +93,6 @@ app.register(fastifySwagger, {
 app.register(fastifySwaggerUI, {
   routePrefix: '/docs',
 })
-
-app.register(fastifyJwt, {
-  secret: env.JWT_SECRET,
-})
-
-app.register(fastifyCors)
 
 app.register(createAccount)
 app.register(authenticateWithPassword)

@@ -5,8 +5,8 @@ interface SignInWithPasswordRequest {
   password: string
 }
 
-interface SignInWithPasswordResponse {
-  token: string
+interface SignInResponse {
+  message: string
 }
 
 export async function signInWithPassword({
@@ -20,7 +20,7 @@ export async function signInWithPassword({
         password,
       },
     })
-    .json<SignInWithPasswordResponse>()
+    .json<SignInResponse>()
 
   return result
 }

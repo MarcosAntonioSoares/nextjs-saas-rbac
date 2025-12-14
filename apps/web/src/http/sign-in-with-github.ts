@@ -4,18 +4,12 @@ interface SignInWithGithubRequest {
   code: string
 }
 
-interface SignInWithGithubResponse {
-  token: string
-}
-
 export async function signInWithGithub({ code }: SignInWithGithubRequest) {
-  const result = await api
-    .post('sessions/github', {
-      json: {
-        code,
-      },
-    })
-    .json<SignInWithGithubResponse>()
+  const response = await api.post('sessions/github', {
+    json: { code },
+  })
 
-  return result
+  if (!response.ok) {
+    throw new Error('Login failed')
+  }
 }

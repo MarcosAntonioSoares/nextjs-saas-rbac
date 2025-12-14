@@ -17,8 +17,8 @@ export async function authenticateWithGitHub(app: FastifyInstance) {
           code: z.string(),
         }),
         response: {
-          201: z.object({
-            token: z.string(),
+          200: z.object({
+            ok: z.boolean(),
           }),
         },
       },
@@ -132,7 +132,16 @@ export async function authenticateWithGitHub(app: FastifyInstance) {
         }
       )
 
-      return reply.status(201).send({ token })
+      return reply
+        .setCookie('auth_token', token, {
+          httpOnly: true,
+          secure: false,
+          sameSite: 'lax',
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7,
+        })
+        .status(200)
+        .send({ ok: true })
     }
   )
 }

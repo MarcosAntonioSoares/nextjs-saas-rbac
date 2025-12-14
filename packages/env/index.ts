@@ -10,6 +10,7 @@ export const env = createEnv({
     GITHUB_OAUTH_CLIENT_ID: z.string(),
     GITHUB_OAUTH_CLIENT_SECRET: z.string(),
     GITHUB_OAUTH_CLIENT_REDIRECT_URI: z.url(),
+    COOKIE_SECRET: z.string().default('default-cookie-secret'),
   },
 
   client: {},
@@ -24,6 +25,7 @@ export const env = createEnv({
     GITHUB_OAUTH_CLIENT_SECRET: process.env.GITHUB_OAUTH_CLIENT_SECRET,
     GITHUB_OAUTH_CLIENT_REDIRECT_URI:
       process.env.GITHUB_OAUTH_CLIENT_REDIRECT_URI,
+    COOKIE_SECRET: process.env.COOKIE_SECRET,
   },
 
   emptyStringAsUndefined: true,

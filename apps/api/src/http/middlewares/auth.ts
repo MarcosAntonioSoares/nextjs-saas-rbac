@@ -5,18 +5,18 @@ import fastifyPlugin from 'fastify-plugin'
 
 export const auth = fastifyPlugin(async (app: FastifyInstance) => {
   app.addHook('preHandler', async (request) => {
-    request.getCurrentUserId = async () => {
-      try {
-        const { sub } = await request.jwtVerify<{ sub: string }>()
+    try {
+      await request.jwtVerify()
+    } catch (err) {
+      throw new UnauthorizedError('Invalid auth token')
+    }
 
-        return sub
-      } catch {
-        throw new UnauthorizedError('Invalid auth token')
-      }
+    request.getCurrentUserId = async () => {
+      return request.user.sub
     }
 
     request.getUserMembership = async (slug: string) => {
-      const userId = await request.getCurrentUserId()
+      const userId = request.user.sub
 
       const member = await prisma.member.findFirst({
         where: {
@@ -35,7 +35,6 @@ export const auth = fastifyPlugin(async (app: FastifyInstance) => {
       }
 
       const { organization, ...membership } = member
-
       return { organization, membership }
     }
   })

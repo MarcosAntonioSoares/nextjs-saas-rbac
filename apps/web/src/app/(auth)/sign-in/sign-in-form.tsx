@@ -20,18 +20,49 @@ import { AlertCircle, AlertTriangle, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { signInWithEmailAndPassword } from '@/app/(auth)/sign-in/actions'
 import { signInWithGithub } from '@/app/(auth)/sign-up/actions'
 import githubIcon from '@/assets/github-icon.svg'
+
+import { signInClient } from '@/app/(auth)/sign-in/sign-in.client'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { useFormState } from '@/hooks/use-form-state'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
+
+type FormState = {
+  success: boolean | null
+  message: string | null
+  fieldErrors: Record<string, string[]>
+  formErrors: string[]
+}
 
 export function SignInForm() {
-  const [
-    { success, message, fieldErrors, formErrors },
-    handleSubmit,
-    isPending,
-  ] = useFormState(signInWithEmailAndPassword)
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+
+  const [{ success, message, fieldErrors, formErrors }, setState] =
+    useState<FormState>({
+      success: null,
+      message: null,
+      fieldErrors: {},
+      formErrors: [],
+    })
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget)
+
+    startTransition(async () => {
+      const result = await signInClient(formData)
+
+      setState(result)
+
+      if (result.success) {
+        router.push('/')
+        router.refresh()
+      }
+    })
+  }
 
   return (
     <div className="flex flex-col gap-6">

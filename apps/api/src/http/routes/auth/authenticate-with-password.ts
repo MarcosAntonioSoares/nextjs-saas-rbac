@@ -18,7 +18,7 @@ export async function authenticateWithPassword(app: FastifyInstance) {
         }),
         response: {
           201: z.object({
-            token: z.string(),
+            message: z.string(),
           }),
         },
       },
@@ -59,8 +59,16 @@ export async function authenticateWithPassword(app: FastifyInstance) {
           },
         }
       )
-
-      return reply.status(201).send({ token })
+      return reply
+        .setCookie('auth_token', token, {
+          httpOnly: true,
+          secure: false,
+          sameSite: 'lax',
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7,
+        })
+        .status(201)
+        .send({ message: 'Authentication successful.' })
     }
   )
 }

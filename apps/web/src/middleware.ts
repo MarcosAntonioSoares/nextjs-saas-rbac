@@ -1,21 +1,15 @@
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('auth_token')?.value
+  const token = request.cookies.get('auth_token')
+  const isAuthPage = request.nextUrl.pathname.startsWith('/auth')
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/sign-in')
-
-  // 🔒 Se NÃO estiver logado e tentar entrar em página protegida → redireciona
-  if (!token && !isAuthPage) {
-    const redirectUrl = new URL('/sign-in', request.url)
-    return NextResponse.redirect(redirectUrl)
+  if (isAuthPage && token) {
+    return NextResponse.redirect(new URL('/', request.url))
   }
 
-  // 🔓 Se estiver logado e tentar acessar /sign-in → manda para home
-  if (token && isAuthPage) {
-    const redirectUrl = new URL('/', request.url)
-    return NextResponse.redirect(redirectUrl)
+  if (!isAuthPage && !token) {
+    return NextResponse.redirect(new URL('/sign-in', request.url))
   }
 
   return NextResponse.next()
