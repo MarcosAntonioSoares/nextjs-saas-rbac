@@ -1,5 +1,10 @@
+import { LogoutButton } from '@/components/auth/logout-button'
 import { Profile } from '@/components/profile'
 
 export default function Home() {
-  return <Profile />
+  return (
+    <div>
+      <Profile /> <LogoutButton />
+    </div>
+  )
 }

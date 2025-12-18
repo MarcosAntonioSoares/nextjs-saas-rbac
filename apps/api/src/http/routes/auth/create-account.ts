@@ -1,3 +1,4 @@
+import { createAuthCookie } from '@/http/auth/create-auth-cookie'
 import { BadRequestError } from '@/http/routes/_errors/bad-request-error'
 import { prisma } from '@/lib/prisma'
 import { hash } from 'bcryptjs'
@@ -13,9 +14,24 @@ export async function createAccount(app: FastifyInstance) {
         summary: 'Create a new account',
         tags: ['Auth'],
         body: z.object({
-          name: z.string(),
-          email: z.email(),
-          password: z.string().min(6),
+          name: z.string().min(1, 'Name is required'),
+          email: z.email('Invalid e-mail'),
+          password: z
+            .string()
+            .min(8, 'Password must be at least 8 characters long')
+            .regex(
+              /[a-z]/,
+              'Password must contain at least one lowercase letter'
+            )
+            .regex(
+              /[A-Z]/,
+              'Password must contain at least one uppercase letter'
+            )
+            .regex(/[0-9]/, 'Password must contain at least one number')
+            .regex(
+              /[^A-Za-z0-9]/,
+              'Password must contain at least one special character'
+            ),
         }),
       },
     },
@@ -41,7 +57,7 @@ export async function createAccount(app: FastifyInstance) {
 
       const passwordHash = await hash(password, 6)
 
-      await prisma.user.create({
+      const user = await prisma.user.create({
         data: {
           name,
           email,
@@ -54,6 +70,11 @@ export async function createAccount(app: FastifyInstance) {
               }
             : undefined,
         },
+      })
+
+      await createAuthCookie({
+        reply,
+        userId: user.id,
       })
 
       return reply.status(201).send()

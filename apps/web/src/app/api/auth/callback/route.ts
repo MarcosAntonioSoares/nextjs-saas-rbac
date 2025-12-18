@@ -1,10 +1,7 @@
-import { signInWithGithub } from '@/http/sign-in-with-github'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-
-  const code = searchParams.get('code')
+  const code = request.nextUrl.searchParams.get('code')
 
   if (!code) {
     return NextResponse.json(
@@ -13,7 +10,9 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  await signInWithGithub({ code })
+  const backendURL = new URL('http://localhost:3333/sessions/github')
 
-  return NextResponse.redirect('http://localhost:3000/')
+  backendURL.searchParams.set('code', code)
+
+  return NextResponse.redirect(backendURL.toString())
 }

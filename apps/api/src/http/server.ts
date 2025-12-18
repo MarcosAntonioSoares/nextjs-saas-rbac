@@ -3,6 +3,7 @@ import { authenticateWithGitHub } from '@/http/routes/auth/authenticate-with-git
 import { authenticateWithPassword } from '@/http/routes/auth/authenticate-with-password'
 import { createAccount } from '@/http/routes/auth/create-account'
 import { getProfile } from '@/http/routes/auth/get-profile'
+import { logout } from '@/http/routes/auth/logout'
 import { requestPasswordRecover } from '@/http/routes/auth/request-password-recover'
 import { resetPassword } from '@/http/routes/auth/reset-password'
 import { getOrganizationBilling } from '@/http/routes/billing/get-organization-billing'
@@ -100,6 +101,7 @@ app.register(authenticateWithGitHub)
 app.register(getProfile)
 app.register(requestPasswordRecover)
 app.register(resetPassword)
+app.register(logout)
 
 app.register(createOrganization)
 app.register(getMembership)

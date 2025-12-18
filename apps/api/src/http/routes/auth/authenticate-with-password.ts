@@ -1,3 +1,4 @@
+import { createAuthCookie } from '@/http/auth/create-auth-cookie'
 import { BadRequestError } from '@/http/routes/_errors/bad-request-error'
 import { prisma } from '@/lib/prisma'
 import { compare } from 'bcryptjs'
@@ -49,26 +50,10 @@ export async function authenticateWithPassword(app: FastifyInstance) {
         throw new BadRequestError('Invalid credentials.')
       }
 
-      const token = await reply.jwtSign(
-        {
-          sub: userFromEmail.id,
-        },
-        {
-          sign: {
-            expiresIn: '7d',
-          },
-        }
-      )
-      return reply
-        .setCookie('auth_token', token, {
-          httpOnly: true,
-          secure: false,
-          sameSite: 'lax',
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7,
-        })
-        .status(201)
-        .send({ message: 'Authentication successful.' })
+      await createAuthCookie({
+        reply,
+        userId: userFromEmail.id,
+      })
     }
   )
 }
