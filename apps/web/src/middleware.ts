@@ -9,12 +9,12 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/sign-up') ||
     pathname.startsWith('/forgot-password')
 
-  if (token && isAuthPage) {
-    return NextResponse.redirect(new URL('/', request.url))
-  }
-
   if (!token && !isAuthPage) {
     return NextResponse.redirect(new URL('/sign-in', request.url))
+  }
+
+  if (token && isAuthPage) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   return NextResponse.next()

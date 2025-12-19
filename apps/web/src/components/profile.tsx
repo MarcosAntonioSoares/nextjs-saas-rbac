@@ -1,9 +1,5 @@
 'use client'
 
-import { getProfile } from '@/http/get-profile'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-
 interface ProfileProps {
   user: {
     id: string
@@ -13,21 +9,7 @@ interface ProfileProps {
   }
 }
 
-export function Profile() {
-  const router = useRouter()
-  const [user, setUser] = useState<ProfileProps['user']>()
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    getProfile()
-      .then((data) => setUser(data.user))
-      .catch(() => router.push('/sign-in'))
-      .finally(() => setIsLoading(false))
-  }, [router])
-
-  if (isLoading) return <div>Loading profile...</div>
-  if (!user) return null
-
+export function Profile({ user }: ProfileProps) {
   return (
     <div>
       <h1>{user.id}</h1>

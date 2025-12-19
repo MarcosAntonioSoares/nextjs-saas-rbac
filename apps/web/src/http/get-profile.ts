@@ -1,4 +1,4 @@
-import { api } from '@/http/api-client'
+import { getServerApi } from '@/http/api-server'
 
 interface GetProfileResponse {
   user: {
@@ -10,7 +10,6 @@ interface GetProfileResponse {
 }
 
 export async function getProfile() {
-  const result = api.get('profile').json<GetProfileResponse>()
-
-  return result
+  const api = await getServerApi()
+  return api.get('profile').json<GetProfileResponse>()
 }

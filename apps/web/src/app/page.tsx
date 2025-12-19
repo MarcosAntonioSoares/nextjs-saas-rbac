@@ -1,13 +1,5 @@
-import { LogoutButton } from '@/components/auth/logout-button'
-import { ModeToggle } from '@/components/mode-toggle'
-import { Profile } from '@/components/profile'
+import { redirect } from 'next/navigation'
 
-export default function Home() {
-  return (
-    <div>
-      <Profile />
-      <LogoutButton />
-      <ModeToggle />
-    </div>
-  )
+export default async function Home() {
+  redirect('/dashboard')
 }
