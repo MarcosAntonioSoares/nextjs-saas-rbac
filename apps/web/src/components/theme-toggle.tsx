@@ -47,7 +47,7 @@ function ThemeItem({
   )
 }
 
-export function ModeToggle() {
+export function ThemeToggle() {
   const { theme, resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
@@ -62,7 +62,7 @@ export function ModeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="ghost" size="icon">
           {isDark ? (
             <Moon className="h-[1.2rem] w-[1.2rem]" />
           ) : (
