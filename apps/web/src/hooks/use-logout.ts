@@ -1,5 +1,3 @@
-'use client'
-
 import { logout } from '@/http/logout'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
