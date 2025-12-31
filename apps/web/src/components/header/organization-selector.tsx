@@ -13,27 +13,14 @@ import {
 import { capitalize } from '@/lib/capitalize'
 import { getInitials } from '@/lib/get-initials'
 import { cn } from '@/lib/utils'
+import { useOrgStore } from '@/stores/useOrgStore'
 import { Building2, Check, ChevronsUpDown, Plus } from 'lucide-react'
 import Link from 'next/link'
 
-interface Organizations {
-  id: string
-  name: string
-  slug: string
-  avatarUrl: string | null
-  role: 'ADMIN' | 'MEMBER' | 'BILLING'
-}
+export function OrganizationSelector() {
+  const organizations = useOrgStore((s) => s.organizations)
+  const activeOrg = useOrgStore((s) => s.activeOrg)
 
-interface OrganizationSelectorProps {
-  activeOrg?: Organizations
-  organizations: Organizations[]
-}
-
-export function OrganizationSelector({
-  activeOrg,
-  organizations,
-}: OrganizationSelectorProps) {
-  console.log('activeOrg: ', activeOrg)
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

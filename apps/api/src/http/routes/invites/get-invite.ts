@@ -1,5 +1,5 @@
 import { BadRequestError } from '@/http/routes/_errors/bad-request-error'
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/client'
 import { roleSchema } from '@saas/auth'
 import { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'

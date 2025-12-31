@@ -1,5 +1,5 @@
 import { auth } from '@/http/middlewares/auth'
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/client'
 import { roleSchema } from '@saas/auth'
 import { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
@@ -25,6 +25,7 @@ export async function getOrganizations(app: FastifyInstance) {
                   slug: z.string(),
                   avatarUrl: z.url().nullable(),
                   role: roleSchema,
+                  lastAccessedAt: z.date().nullable(),
                 })
               ),
             }),
@@ -43,6 +44,7 @@ export async function getOrganizations(app: FastifyInstance) {
             members: {
               select: {
                 role: true,
+                lastAccessedAt: true,
               },
               where: { userId },
             },
@@ -56,17 +58,27 @@ export async function getOrganizations(app: FastifyInstance) {
           },
         })
 
-        const organizationsWhithUserRole = organizations.map(
+        const organizationsWithUserRole = organizations.map(
           ({ members, ...org }) => {
             return {
               ...org,
               role: members[0]?.role,
+              lastAccessedAt: members[0]?.lastAccessedAt,
             }
           }
         )
 
+        organizationsWithUserRole.sort((a, b) => {
+          if (a.lastAccessedAt && b.lastAccessedAt) {
+            return b.lastAccessedAt.getTime() - a.lastAccessedAt.getTime()
+          }
+          if (a.lastAccessedAt) return -1
+          if (b.lastAccessedAt) return 1
+          return 0
+        })
+
         return {
-          organizations: organizationsWhithUserRole,
+          organizations: organizationsWithUserRole,
         }
       }
     )

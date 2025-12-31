@@ -1,7 +1,7 @@
 import { auth } from '@/http/middlewares/auth'
 import { BadRequestError } from '@/http/routes/_errors/bad-request-error'
 import { UnauthorizedError } from '@/http/routes/_errors/unauthorized-error'
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/client'
 import { getUserPermissions } from '@/utils/get-user-permissions'
 import { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'

@@ -24,6 +24,7 @@ import { getOrganizations } from '@/http/routes/orgs/get-organizations'
 import { shutdownOrganization } from '@/http/routes/orgs/shutdown-organization'
 import { transferOrganization } from '@/http/routes/orgs/transfer-organization'
 import { updateOrganization } from '@/http/routes/orgs/update-organization'
+import { updateOrganizationAccess } from '@/http/routes/orgs/update-organization-access'
 import { createProject } from '@/http/routes/projects/create-projects'
 import { deleteProject } from '@/http/routes/projects/delete-projects'
 import { getProject } from '@/http/routes/projects/get-project'
@@ -110,6 +111,7 @@ app.register(getOrganizations)
 app.register(updateOrganization)
 app.register(shutdownOrganization)
 app.register(transferOrganization)
+app.register(updateOrganizationAccess)
 
 app.register(createProject)
 app.register(deleteProject)

@@ -1,5 +1,5 @@
 import { UnauthorizedError } from '@/http/routes/_errors/unauthorized-error'
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/client'
 import { FastifyInstance } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
 

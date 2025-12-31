@@ -13,30 +13,16 @@ import {
 import { capitalize } from '@/lib/capitalize'
 import { getInitials } from '@/lib/get-initials'
 import { cn } from '@/lib/utils'
-import { useAbility } from '@/providers/ability-provider'
+import { useOrgStore } from '@/stores/useOrgStore'
 import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 import Link from 'next/link'
 
-interface Organizations {
-  id: string
-  name: string
-  slug: string
-  avatarUrl: string | null
-  role: 'ADMIN' | 'MEMBER' | 'BILLING'
-}
+export function ProjectSelector() {
+  const organizations = useOrgStore((s) => s.organizations)
+  const activeOrg = useOrgStore((s) => s.activeOrg)
+  const ability = useOrgStore((s) => s.ability)
 
-interface ProjectSelectorProps {
-  activeOrg: Organizations
-  organizations: Organizations[]
-}
-
-export function ProjectSelector({
-  activeOrg,
-  organizations,
-}: ProjectSelectorProps) {
-  const ability = useAbility()
-
-  if (!ability.can('get', 'Project')) {
+  if (!ability?.can('get', 'Project')) {
     return null
   }
 
@@ -50,12 +36,12 @@ export function ProjectSelector({
           <div className="flex items-center gap-2.5 overflow-hidden">
             <Avatar className="h-6 w-6 shrink-0">
               <AvatarImage
-                src={activeOrg.avatarUrl || '/placeholder.svg'}
-                alt={`${activeOrg.name} avatar`}
+                src={activeOrg?.avatarUrl || '/placeholder.svg'}
+                alt={`${activeOrg?.name} avatar`}
               />
-              <AvatarFallback>{getInitials(activeOrg.name)}</AvatarFallback>
+              <AvatarFallback>{getInitials(activeOrg?.name)}</AvatarFallback>
             </Avatar>
-            <span className="truncate font-medium">{activeOrg.name}</span>
+            <span className="truncate font-medium">{activeOrg?.name}</span>
           </div>
           <Badge className="ml-auto h-5" variant="secondary">
             Admin
@@ -70,7 +56,7 @@ export function ProjectSelector({
         sideOffset={4}
       >
         {organizations.map((org) => {
-          const isActive = org.slug === activeOrg.slug
+          const isActive = org.slug === activeOrg?.slug
 
           return (
             <DropdownMenuItem

@@ -1,6 +1,7 @@
 import { createAuthCookie } from '@/http/auth/create-auth-cookie'
 import { BadRequestError } from '@/http/routes/_errors/bad-request-error'
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/client'
+
 import { compare } from 'bcryptjs'
 import { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'

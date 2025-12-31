@@ -1,6 +1,6 @@
 import { Role } from '@saas/auth'
 
-import { api } from '@/http/api-client'
+import { getServerApi } from '@/http/api-server'
 
 interface GetMembershipResponse {
   membership: {
@@ -12,6 +12,7 @@ interface GetMembershipResponse {
 }
 
 export async function getMembership(org: string | undefined) {
+  const api = await getServerApi()
   return api
     .get(`organizations/${org}/membership`)
     .json<GetMembershipResponse>()

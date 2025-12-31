@@ -12,7 +12,8 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "src/app/org/[slug]"
+    "src/app/org/[slug]",
+    "src/components/app-shell.old.tsx."
   ],
   "exclude": ["node_modules"]
 }

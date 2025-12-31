@@ -1,6 +1,6 @@
 import { auth } from '@/http/middlewares/auth'
 import { UnauthorizedError } from '@/http/routes/_errors/unauthorized-error'
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/client'
 import { createSlug } from '@/utils/create-slug'
 import { getUserPermissions } from '@/utils/get-user-permissions'
 import { FastifyInstance } from 'fastify'

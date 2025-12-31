@@ -1,6 +1,6 @@
 import { createAuthCookie } from '@/http/auth/create-auth-cookie'
 import { BadRequestError } from '@/http/routes/_errors/bad-request-error'
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/client'
 import { env } from '@saas/env'
 import { FastifyReply } from 'fastify'
 import { z } from 'zod'
